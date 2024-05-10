@@ -8,10 +8,12 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
+import RoofingIcon from '@mui/icons-material/Roofing';
 
 import { getShelterData } from '../hooks/useShelterData';
 import LoadingPage from './LoadingPage';
 import ErrorPage from './ErrorPage';
+
 
 const cards = Array.from({ length: 10 }, (_, index) => ({
   id: index + 1,
@@ -70,7 +72,7 @@ const SheltersPage = () => {
               textDecoration: "none"
             }}
           >
-            <CardMedia
+            {/* <CardMedia
               component="div"
               sx={{
                 width: '40%', 
@@ -78,7 +80,11 @@ const SheltersPage = () => {
                 backgroundImage: `url(${shelter.image})`,
                 backgroundSize: 'cover',
               }}
-            />
+            /> */}
+            <CardMedia  sx={{
+                width: '40%', 
+                backgroundSize: 'cover',
+              }}> <RoofingIcon color="primary" sx={{fontSize: 150}}/></CardMedia>
             <CardContent sx={{ flexGrow: 1, padding: '16px' }}>
               <Typography gutterBottom variant="h5" component="h5" textAlign="center">
                 {shelter.name}

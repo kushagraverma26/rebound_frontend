@@ -9,6 +9,10 @@ import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignupPage";
 import ChatPage from "./pages/ChatPage";
 import ShelterDetailsPage from "./pages/ShelterDetailsPage";
+import AdminHomePage from "./pages/AdminHomePage";
+import ManageShelterPage from "./pages/ManageShelterPage";
+import ManageResourcePage from "./pages/ManageResourcePage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 
 const router = createBrowserRouter([
     {
@@ -23,6 +27,15 @@ const router = createBrowserRouter([
         { path: "login", element: <Login /> },
         { path: "signup", element: <SignUp /> },
         { path: "chat", element: <ChatPage /> },
+        // Testing for now
+        { path: "admin",
+          children: [
+          { path: "", element: <AdminHomePage />, index: true, },  
+          { path: "shelters", element: <ManageShelterPage /> },
+          { path: "resources", element: <ManageResourcePage /> },
+          { path: "dashboard", element: <AdminDashboardPage /> }
+          ]
+        },
       ],
     },
 ]);

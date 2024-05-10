@@ -47,7 +47,15 @@ const cards = [
   },
 ];
 
-const ResourcesPage = () => {
+const ManageResourcePage = () => {
+  const handleEdit = (resource) => {
+    console.log("Edit resource:", resource);
+  };
+
+  const handleDelete = (resource) => {
+    console.log("Delete resource:", resource);
+  };
+
   return (
     <>
       <Box
@@ -65,7 +73,7 @@ const ResourcesPage = () => {
             color="text.primary"
             gutterBottom
           >
-            Available Resources
+            Manage Resources
           </Typography>
           <Typography
             variant="h5"
@@ -121,7 +129,8 @@ const ResourcesPage = () => {
                 </CardContent>
                 <CardActions>
                   <Button size="small">View</Button>
-                  {/* <Button size="small">Edit</Button> */}
+                  <Button size="small" onClick={() => handleEdit(card)}>Edit</Button>
+                  <Button size="small" onClick={() => handleDelete(card)}>Delete</Button>
                 </CardActions>
               </Card>
             </Grid>
@@ -132,4 +141,4 @@ const ResourcesPage = () => {
   );
 };
 
-export default ResourcesPage;
+export default ManageResourcePage;
