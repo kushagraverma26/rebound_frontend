@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -10,6 +10,9 @@ import {
   Grid,
   Box,
 } from "@mui/material";
+
+import EditResourceModal from "../components/EditResourceModal";
+import AddResourceModal from '../components/AddResourceModal';
 
 const cards = [
   {
@@ -48,10 +51,33 @@ const cards = [
 ];
 
 const ManageResourcePage = () => {
-  const handleEdit = (resource) => {
-    console.log("Edit resource:", resource);
-  };
 
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [addModalOpen, setAddModalOpen] = useState(false); // State for controlling add resource modal visibility
+    const [selectedResource, setSelectedResource] = useState(null);
+    
+    const handleEdit = (resource) => {
+        setSelectedResource(resource);
+        setEditModalOpen(true);
+    };
+    
+    const handleCloseEditModal = () => {
+        setEditModalOpen(false);
+    };
+
+    const handleAddResource = () => {
+        setAddModalOpen(true);
+      };
+    
+      const handleCloseAddModal = () => {
+        setAddModalOpen(false);
+      };
+    
+    const handleSubmit = (formData) => {
+        // Send PUT request to API with formData
+        console.log("Submitting form data:", formData);
+    };
+ 
   const handleDelete = (resource) => {
     console.log("Delete resource:", resource);
   };
@@ -86,6 +112,11 @@ const ManageResourcePage = () => {
             process.
           </Typography>
         </Container>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+        <Button variant="contained" color="primary" onClick={handleAddResource}>
+          Add Resource
+        </Button>
       </Box>
       <Container sx={{ py: 8 }} maxWidth="md">
         <Grid container spacing={4}>
@@ -137,6 +168,16 @@ const ManageResourcePage = () => {
           ))}
         </Grid>
       </Container>
+      <AddResourceModal
+        open={addModalOpen}
+        onClose={handleCloseAddModal}
+        onSubmit={handleSubmit} />
+      <EditResourceModal
+        resource={selectedResource}
+        open={editModalOpen}
+        onClose={handleCloseEditModal}
+        onSubmit={handleSubmit}
+      />
     </>
   );
 };

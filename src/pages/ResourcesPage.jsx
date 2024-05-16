@@ -10,44 +10,24 @@ import {
   Grid,
   Box,
 } from "@mui/material";
-
-const cards = [
-  {
-    type: "video",
-    videoId: "/klvm6dpuS_A?si=j6TFO-Zux2zz4MLP",
-    heading: "Roommate Agreements",
-    description: "How roommate agreements work",
-  },
-  {
-    type: "video",
-    videoId: "/bimXxKVI_XM?si=RPYNP6FtwJG8BWlk",
-    heading: "California Rental and Lease Agreement",
-    description: "How Rental and Lease Agreements work",
-  },
-  {
-    type: "video",
-    videoId: "/0bIutq_uMjo?si=GSBVPYnbsg4jgjQh",
-    heading: "Rental Laws and Eviction Rules",
-    description: "How Rental Laws and Eviction Rules work",
-  },
-  {
-    type: "normal",
-    heading: "California Unemployment Insurance",
-    description: "California Unemployment Insurance",
-  },
-  {
-    type: "normal",
-    heading: "California CalWORKs (TANF)",
-    description: "California CalWORKs (TANF)",
-  },
-  {
-    type: "normal",
-    heading: "Specified Low-Income Medicare Beneficiary (SLMB) Program",
-    description: "Specified Low-Income Medicare Beneficiary (SLMB) Program",
-  },
-];
+import { getResourceData } from '../hooks/useResourceData';
+import { Link } from "react-router-dom";
+import LoadingPage from './LoadingPage';
+import ErrorPage from './ErrorPage';
 
 const ResourcesPage = () => {
+  const { data, loading, error } = getResourceData();
+
+  if (loading) {
+    // Handle loading state
+    return <LoadingPage message="Please Wait..."/>;
+  }
+
+  if (error) {
+    // Handle error state
+    return <ErrorPage />;
+  }
+
   return (
     <>
       <Box
@@ -81,8 +61,8 @@ const ResourcesPage = () => {
       </Box>
       <Container sx={{ py: 8 }} maxWidth="md">
         <Grid container spacing={4}>
-          {cards.map((card, index) => (
-            <Grid item key={index} xs={12} sm={6} md={4}>
+          {data.map((resource) => (
+            <Grid item key={resource.id} xs={12} sm={6} md={4}>
               <Card
                 sx={{
                   height: "100%",
@@ -90,17 +70,12 @@ const ResourcesPage = () => {
                   flexDirection: "column",
                 }}
               >
-                {card.type === "video" ? (
+                 {resource.type === "video" ? (
                   <CardMedia
                     component="iframe"
-                    src={`https://www.youtube.com/embed/${card.videoId}`}
-                    title={card.heading}
+                    src={`https://www.youtube.com/embed/${resource.video_url}`}
+                    title={resource.name}
                     allowFullScreen
-                    sx={
-                      {
-                        // pt: "56.25%",
-                      }
-                    }
                   />
                 ) : (
                   <CardMedia
@@ -115,13 +90,18 @@ const ResourcesPage = () => {
                 )}
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Typography gutterBottom variant="h5" component="h2">
-                    {card.heading}
+                    {resource.name}
                   </Typography>
-                  <Typography>{card.description}</Typography>
+                  <Typography>{resource.description}</Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small">View</Button>
-                  {/* <Button size="small">Edit</Button> */}
+                <Button
+                    component={Link}
+                    to={`/resources/${resource.id}`}
+                    key={resource.id}
+                    size="small">
+                    View
+                  </Button>
                 </CardActions>
               </Card>
             </Grid>

@@ -13,6 +13,7 @@ import AdminHomePage from "./pages/AdminHomePage";
 import ManageShelterPage from "./pages/ManageShelterPage";
 import ManageResourcePage from "./pages/ManageResourcePage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import ResourceDetailsPage from "./pages/ResourceDetailsPage";
 
 const router = createBrowserRouter([
     {
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
       children: [
         { index: true, element: <HomePage /> },
         { path: "resources", element: <ResourcesPage /> },
+        { path: "resources/:id", element: <ResourceDetailsPage />},
         { path: "shelters", element: <SheltersPage /> },
         { path: "shelters/:id", element: <ShelterDetailsPage />},
         { path: "login", element: <Login /> },
