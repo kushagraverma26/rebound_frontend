@@ -1,10 +1,9 @@
 import * as React from "react";
-import { useState, useEffect } from 'react';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -12,46 +11,60 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Modal from "@mui/material/Modal";
-
-import { login } from '../hooks/useLogin';
-
+import LoadingPage from "./LoadingPage";
+import { useMutation } from "@tanstack/react-query";
+import { useLogin } from "../hooks/useLogin";
 
 const Login = () => {
   const [open, setOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [validationError, setValidationError] = useState("");
 
-  const loginHook = login();
+  const navigate = useNavigate();
+  const login = useLogin();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
-    try {
-      const { data, loading, error } = loginHook(email, password);
-      if (loading) {
-        return <LoadingPage message="Please Wait..."/>;
-      }
-      if (error) {
-        return <ErrorPage />;
-      }
-      console.log(data)
-      setModalMessage("Login successful!");
+
+    if (!email || !password) {
+      setValidationError("Both email and password fields are required.");
       setOpen(true);
-    } catch (error) {
-      console.log(error)
-      setModalMessage("Incorrect email or password");
-      setOpen(true);
+      return;
     }
+
+    login.mutate(
+      { email, password },
+      {
+        onSuccess: () => {
+          setModalMessage("Login successful!");
+          setOpen(true);
+          setTimeout(() => {
+            setOpen(false);
+            navigate("/admin");
+          }, 1000);
+        },
+        onError: () => {
+          setModalMessage("Login unsuccessful!");
+          setOpen(true);
+        },
+      }
+    );
   };
 
   const handleClose = () => {
     setOpen(false);
+    setValidationError("");
   };
+
+  if (login.isPending) return <LoadingPage message="Please Wait..." />;
 
   return (
     <>
-      <Container component="main" maxWidth="xs" sx={{ height: "70vh"}}>
+      <Container component="main" maxWidth="xs" sx={{ height: "70vh" }}>
         <Box
           sx={{
             marginTop: 8,
@@ -92,10 +105,6 @@ const Login = () => {
               id="password"
               autoComplete="current-password"
             />
-            {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
             <Button
               type="submit"
               fullWidth
@@ -110,7 +119,7 @@ const Login = () => {
                   Forgot password?
                 </Link> */}
               </Grid>
-              <Grid item >
+              <Grid item>
                 <Link href="/signup" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
@@ -138,7 +147,7 @@ const Login = () => {
           }}
         >
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            {modalMessage}
+            {validationError || modalMessage}
           </Typography>
         </Box>
       </Modal>

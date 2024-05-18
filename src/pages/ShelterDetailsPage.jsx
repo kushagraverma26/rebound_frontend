@@ -16,9 +16,10 @@ import ShelterApplyModal from "../components/ShelterApplyModal";
 
 const ShelterDetailsPage = () => {
   const { id } = useParams();
-  const { data, loading, error } = getShelterDetails(id);
-  const [openModal, setOpenModal] = useState(false);
 
+  const { isPending, isError, data, error } = getShelterDetails(id);
+
+  const [openModal, setOpenModal] = useState(false);
 
   const handleSubmit = (formData) => {
     // Send PUT request to API with formData
@@ -33,14 +34,9 @@ const ShelterDetailsPage = () => {
     setOpenModal(true);
   };
 
-  if (loading) {
-    return <LoadingPage message="Please Wait..." />;
-  }
+  if (isPending) return <LoadingPage message="Please Wait..." />;
 
-  if (error) {
-    console.log(error);
-    return <ErrorPage />;
-  }
+  if (isError) return <ErrorPage />;
 
   return (
     <>

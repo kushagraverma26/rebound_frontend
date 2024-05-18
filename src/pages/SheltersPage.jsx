@@ -12,20 +12,16 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import RoofingIcon from "@mui/icons-material/Roofing";
-import { getShelterData } from '../hooks/useShelterData';
-import LoadingPage from './LoadingPage';
-import ErrorPage from './ErrorPage';
+import { getShelterData } from "../hooks/useShelterData";
+import LoadingPage from "./LoadingPage";
+import ErrorPage from "./ErrorPage";
 
 const SheltersPage = () => {
-  const { data, loading, error } = getShelterData();
+  const { isPending, isError, data, error } = getShelterData();
 
-  if (loading) {
-    return <LoadingPage message="Please Wait..."/>;
-  }
+  if (isPending) return <LoadingPage message="Please Wait..." />;
 
-  if (error) {
-    return <ErrorPage />;
-  }
+  if (isError) return <ErrorPage />;
 
   return (
     <>
@@ -46,7 +42,12 @@ const SheltersPage = () => {
           >
             Housing Resources
           </Typography>
-          <Typography variant="h5" align="center" color="text.secondary" paragraph>
+          <Typography
+            variant="h5"
+            align="center"
+            color="text.secondary"
+            paragraph
+          >
             Find information about available shelters in your area.
           </Typography>
         </Container>
@@ -72,7 +73,12 @@ const SheltersPage = () => {
                   <RoofingIcon color="primary" sx={{ fontSize: 150 }} />
                 </CardMedia>
                 <CardContent sx={{ flexGrow: 1, padding: "16px" }}>
-                  <Typography gutterBottom variant="h5" component="h5" textAlign="center">
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="h5"
+                    textAlign="center"
+                  >
                     {shelter.name}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
@@ -84,7 +90,8 @@ const SheltersPage = () => {
                     component={Link}
                     to={`/shelters/${shelter.id}`}
                     key={shelter.id}
-                    size="small">
+                    size="small"
+                  >
                     View
                   </Button>
                 </CardActions>
