@@ -1,66 +1,125 @@
-import React, { useState } from "react";
+import RoofingIcon from "@mui/icons-material/Roofing";
 import {
+  Box,
+  Button,
   Card,
+  CardActions,
   CardContent,
   CardMedia,
-  CardActions,
   Container,
-  Typography,
-  Button,
   Grid,
-  Box,
+  Modal,
+  Typography,
 } from "@mui/material";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import EditShelterModal from "../components/EditShelterModal";
+
+import { useQueryClient } from "@tanstack/react-query";
 import AddShelterModal from "../components/AddSHelterModal";
+import EditShelterModal from "../components/EditShelterModal";
 import { getShelterData } from "../hooks/useShelterData";
-import LoadingPage from "./LoadingPage";
+import { useShelterAdd } from "../hooks/useShelterAdd";
+import { useShelterUpdate } from "../hooks/useShelterUpdate";
+import { useShelterDelete } from "../hooks/useShelterDelete";
 import ErrorPage from "./ErrorPage";
-import RoofingIcon from "@mui/icons-material/Roofing";
+import LoadingPage from "./LoadingPage";
 
 const ManageShelterPage = () => {
+  // Message modal
+  const [open, setOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  // Edit shelter modal
   const [editModalOpen, setEditModalOpen] = useState(false);
+  // Add shelter modal
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [selectedShelter, setSelectedShelter] = useState(null);
 
-  const { data, loading, error } = getShelterData();
+  const { isPending, isError, data, error } = getShelterData();
 
-  const handleEdit = (shelter) => {
+  const addShelterMutation = useShelterAdd();
+  const editShelterMutation = useShelterUpdate();
+  const deleteShelterMutation = useShelterDelete();
+
+  const queryClient = useQueryClient();
+
+  // Error modal close
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  // For edit modal
+  // Handle Edit submit
+  const handleEdiSubmit = (formData) => {
+    console.log("Submitting edit form data:", formData);
+  };
+
+  // Shelter Edit modal
+  const handleEditModalClose = () => {
+    setEditModalOpen(false);
+  };
+
+  // Shelter Edit modal
+  const handleEditModalOpen = (shelter) => {
     setSelectedShelter(shelter);
     setEditModalOpen(true);
   };
 
-  const handleCloseEditModal = () => {
-    setEditModalOpen(false);
+  // For add modal
+  // Handle add submit
+  const handleAddSubmit = (formData) => {
+    const name = formData?.name;
+    const type = formData?.type;
+    const description = formData?.description;
+    const contactPerson = formData?.contactPerson;
+    const phoneNumber = formData?.phoneNumber;
+    const email = formData?.email;
+    const address = formData?.address;
+    const createdBy = localStorage.getItem("admin_id");
+
+    addShelterMutation.mutate(
+      {
+        name,
+        type,
+        description,
+        contactPerson,
+        phoneNumber,
+        email,
+        address,
+        createdBy,
+      },
+      {
+        onSuccess: (data) => {
+          // On successful addition, show message
+          handleAddModalClose();
+          setModalMessage("Shelter Added successfully");
+          setOpen(true);
+          queryClient.invalidateQueries({ queryKey: ["shelters"] });
+        },
+        onError: (error) => {
+          setModalMessage("Something went wrong. Please try again!");
+          setOpen(true);
+        },
+      }
+    );
   };
 
-  const handleAddShelter = () => {
-    setAddModalOpen(true);
-  };
-
-  const handleCloseAddModal = () => {
+  const handleAddModalClose = () => {
     setAddModalOpen(false);
   };
 
-  // Function to handle submit (for edit and add modals)
-  const handleSubmit = (formData) => {
-    // Implement API call to save shelter details
-    console.log("Submitting form data:", formData);
+  const handleAddModalOpen = () => {
+    setAddModalOpen(true);
   };
 
-  // Function to handle delete
+  // FOr delete
   const handleDelete = (shelter) => {
     // Implement API call to delete shelter
     console.log("Delete shelter:", shelter);
   };
 
-  if (loading) {
-    return <LoadingPage message="Please Wait..." />;
-  }
+  if (isPending) return <LoadingPage message="Please Wait..." />;
 
-  if (error) {
-    return <ErrorPage />;
-  }
+  if (isError) return <ErrorPage />;
 
   return (
     <>
@@ -92,7 +151,11 @@ const ManageShelterPage = () => {
         </Container>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-        <Button variant="contained" color="primary" onClick={handleAddShelter}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddModalOpen}
+        >
           Add Shelter
         </Button>
       </Box>
@@ -138,7 +201,10 @@ const ManageShelterPage = () => {
                   >
                     View
                   </Button>
-                  <Button size="small" onClick={() => handleEdit(shelter)}>
+                  <Button
+                    size="small"
+                    onClick={() => handleEditModalOpen(shelter)}
+                  >
                     Edit
                   </Button>
                   <Button size="small" onClick={() => handleDelete(shelter)}>
@@ -150,17 +216,39 @@ const ManageShelterPage = () => {
           ))}
         </Grid>
       </Container>
-      {/* Pass appropriate props to EditShelterModal and AddShelterModal */}
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            {modalMessage}
+          </Typography>
+        </Box>
+      </Modal>
       <EditShelterModal
         open={editModalOpen}
-        onClose={handleCloseEditModal}
-        onSubmit={handleSubmit}
+        onClose={handleEditModalClose}
+        onSubmit={handleEdiSubmit}
         shelter={selectedShelter}
       />
       <AddShelterModal
         open={addModalOpen}
-        onClose={handleCloseAddModal}
-        onSubmit={handleSubmit}
+        onClose={handleAddModalClose}
+        onSubmit={handleAddSubmit}
       />
     </>
   );

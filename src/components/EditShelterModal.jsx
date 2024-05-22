@@ -1,18 +1,33 @@
-import React, { useState } from 'react';
-import { Modal, Box, Typography, TextField, Button } from '@mui/material';
+import React, { useState, useEffect } from "react";
+import { Modal, Box, Typography, TextField, Button } from "@mui/material";
 
-const EditShelterModal = ({ open, onClose, shelter }) => {
+const EditShelterModal = ({ open, onClose, onSubmit, shelter }) => {
   const [formData, setFormData] = useState({
-    id: shelter?.id || "",
-    name: shelter?.name || "",
-    type: shelter?.type || "",
-    description: shelter?.description || "",
-    contactPerson: shelter?.contact_person || "",
-    phoneNumber: shelter?.phone_number || "",
-    email: shelter?.email || "",
-    address: shelter?.address || "",
-    createdBy: shelter?.created_by || "",
+    id: "",
+    name: "",
+    type: "",
+    description: "",
+    contactPerson: "",
+    phoneNumber: "",
+    email: "",
+    address: "",
   });
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (shelter) {
+      setFormData({
+        id: shelter.id || "",
+        name: shelter.name || "",
+        type: shelter.type || "",
+        description: shelter.description || "",
+        contactPerson: shelter.contact_person || "",
+        phoneNumber: shelter.phone_number || "",
+        email: shelter.email || "",
+        address: shelter.address || "",
+      });
+    }
+  }, [shelter]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,40 +37,50 @@ const EditShelterModal = ({ open, onClose, shelter }) => {
     }));
   };
 
-  const handleSubmit = async () => {
-    try {
-      const response = await fetch(`/api/shelters/${formData.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      if (!response.ok) {
-        throw new Error('Failed to update shelter');
-      }
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = "Name is required";
+    if (!formData.type.trim()) newErrors.type = "Type is required";
+    if (!formData.description.trim())
+      newErrors.description = "Description is required";
+    if (!formData.phoneNumber.trim())
+      newErrors.phoneNumber = "Phone number is required";
+    if (!/^\d{10}$/.test(formData.phoneNumber))
+      newErrors.phoneNumber = "Phone number must be exactly 10 digits";
+    if (!formData.email.trim()) newErrors.email = "Email is required";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+      newErrors.email = "Please enter a valid email address";
+    if (!formData.address.trim()) newErrors.address = "Address is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (validate()) {
+      onSubmit(formData);
       onClose();
-      // Optionally, you can handle success behavior like showing a success message or updating state
-    } catch (error) {
-      console.error('Error updating shelter:', error);
-      // Optionally, you can handle error behavior like showing an error message
     }
   };
 
   return (
-    <Modal open={open} onClose={onClose} aria-labelledby="edit-shelter-modal-title">
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby="edit-shelter-modal-title"
+    >
       <Box
         sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
           width: 400,
-          bgcolor: 'background.paper',
+          bgcolor: "background.paper",
           borderRadius: 5,
           boxShadow: 24,
           p: 4,
-          textAlign: 'center',
+          textAlign: "center",
         }}
       >
         <Typography variant="h6" id="edit-shelter-modal-title" gutterBottom>
@@ -65,28 +90,37 @@ const EditShelterModal = ({ open, onClose, shelter }) => {
           <TextField
             name="name"
             label="Name"
+            required
             fullWidth
             value={formData.name}
             onChange={handleChange}
             sx={{ mb: 2 }}
+            error={!!errors.name}
+            helperText={errors.name}
           />
           <TextField
             name="type"
             label="Type"
+            required
             fullWidth
             value={formData.type}
             onChange={handleChange}
             sx={{ mb: 2 }}
+            error={!!errors.type}
+            helperText={errors.type}
           />
           <TextField
             name="description"
             label="Description"
+            required
             fullWidth
             multiline
             rows={4}
             value={formData.description}
             onChange={handleChange}
             sx={{ mb: 2 }}
+            error={!!errors.description}
+            helperText={errors.description}
           />
           <TextField
             name="contactPerson"
@@ -99,34 +133,35 @@ const EditShelterModal = ({ open, onClose, shelter }) => {
           <TextField
             name="phoneNumber"
             label="Phone Number"
+            required
             fullWidth
             value={formData.phoneNumber}
             onChange={handleChange}
             sx={{ mb: 2 }}
+            error={!!errors.phoneNumber}
+            helperText={errors.phoneNumber}
           />
           <TextField
             name="email"
             label="Email"
+            required
             fullWidth
             value={formData.email}
             onChange={handleChange}
             sx={{ mb: 2 }}
+            error={!!errors.email}
+            helperText={errors.email}
           />
           <TextField
             name="address"
             label="Address"
+            required
             fullWidth
             value={formData.address}
             onChange={handleChange}
             sx={{ mb: 2 }}
-          />
-          <TextField
-            name="createdBy"
-            label="Created By"
-            fullWidth
-            value={formData.createdBy}
-            onChange={handleChange}
-            sx={{ mb: 2 }}
+            error={!!errors.address}
+            helperText={errors.address}
           />
           <Button type="submit" variant="contained" color="primary">
             Update Shelter

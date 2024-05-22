@@ -8,11 +8,13 @@ import {
   Box,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import HomeIcon from '@mui/icons-material/Home';
-import BusinessIcon from '@mui/icons-material/Business';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import HomeIcon from "@mui/icons-material/Home";
+import BusinessIcon from "@mui/icons-material/Business";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 const AdminHomePage = () => {
+  const name = localStorage.getItem("name") || "Admin";
+
   return (
     <Box
       sx={{
@@ -30,7 +32,7 @@ const AdminHomePage = () => {
           color="text.primary"
           gutterBottom
         >
-          Hello Admin
+          Hello {name}
         </Typography>
       </Container>
       <Container sx={{ flexGrow: 1 }}>
@@ -55,9 +57,7 @@ const AdminHomePage = () => {
                   <Typography gutterBottom variant="h5" component="h2">
                     Manage Shelters
                   </Typography>
-                  <Typography>
-                    Click here to manage shelters.
-                  </Typography>
+                  <Typography>Click here to manage shelters.</Typography>
                 </CardContent>
               </Card>
             </Link>
@@ -78,9 +78,7 @@ const AdminHomePage = () => {
                   <Typography gutterBottom variant="h5" component="h2">
                     Manage Resources
                   </Typography>
-                  <Typography>
-                    Click here to manage resources.
-                  </Typography>
+                  <Typography>Click here to manage resources.</Typography>
                 </CardContent>
               </Card>
             </Link>
@@ -101,9 +99,7 @@ const AdminHomePage = () => {
                   <Typography gutterBottom variant="h5" component="h2">
                     Dashboard
                   </Typography>
-                  <Typography>
-                    Click here to view the dashboard.
-                  </Typography>
+                  <Typography>Click here to view the dashboard.</Typography>
                 </CardContent>
               </Card>
             </Link>

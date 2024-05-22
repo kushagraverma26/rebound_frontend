@@ -1,6 +1,4 @@
-import * as React from "react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -11,43 +9,45 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Modal from "@mui/material/Modal";
-import LoadingPage from "./LoadingPage";
-import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 import { useLogin } from "../hooks/useLogin";
+import LoadingPage from "./LoadingPage";
 
 const Login = () => {
   const [open, setOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  const [validationError, setValidationError] = useState("");
-
   const navigate = useNavigate();
-  const login = useLogin();
+  const { isAuthenticated, login } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/admin");
+    }
+  }, [isAuthenticated, navigate]);
+
+  const loginMutation = useLogin();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
 
     if (!email || !password) {
-      setValidationError("Both email and password fields are required.");
+      setModalMessage("Both fields are required.");
       setOpen(true);
       return;
     }
 
-    login.mutate(
+    loginMutation.mutate(
       { email, password },
       {
-        onSuccess: () => {
-          setModalMessage("Login successful!");
-          setOpen(true);
-          setTimeout(() => {
-            setOpen(false);
-            navigate("/admin");
-          }, 1000);
+        onSuccess: (data) => {
+          login(data);
+          navigate("/admin");
         },
-        onError: () => {
+        onError: (error) => {
           setModalMessage("Login unsuccessful!");
           setOpen(true);
         },
@@ -57,10 +57,9 @@ const Login = () => {
 
   const handleClose = () => {
     setOpen(false);
-    setValidationError("");
   };
 
-  if (login.isPending) return <LoadingPage message="Please Wait..." />;
+  if (loginMutation.isPending) return <LoadingPage message="Please Wait..." />;
 
   return (
     <>
@@ -147,7 +146,7 @@ const Login = () => {
           }}
         >
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            {validationError || modalMessage}
+            {modalMessage}
           </Typography>
         </Box>
       </Modal>
