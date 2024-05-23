@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
-import { post } from "./useAPI";
+import { put } from "./useAPI";
 
-export const useShelterUpdate = (id) =>
+export const useShelterUpdate = () =>
   useMutation({
-    mutationFn: (data) => post(`/shelters/update/${id}`, data),
+    mutationFn: ({ id, data }) => put(`/shelters/update/${id}`, data),
   });

@@ -10,20 +10,21 @@ import {
   Grid,
   Box,
 } from "@mui/material";
-import { getResourceData } from '../hooks/useResourceData';
+import { getResourceData } from "../hooks/useResourceData";
+import { extractVideoID } from "../utils/helpers";
 import { Link } from "react-router-dom";
-import LoadingPage from './LoadingPage';
-import ErrorPage from './ErrorPage';
+import LoadingPage from "./LoadingPage";
+import ErrorPage from "./ErrorPage";
 
 const ResourcesPage = () => {
-  const { data, loading, error } = getResourceData();
+  const { isPending, isError, data, error } = getResourceData();
 
-  if (loading) {
+  if (isPending) {
     // Handle loading state
-    return <LoadingPage message="Please Wait..."/>;
+    return <LoadingPage message="Please Wait..." />;
   }
 
-  if (error) {
+  if (isError) {
     // Handle error state
     return <ErrorPage />;
   }
@@ -70,10 +71,12 @@ const ResourcesPage = () => {
                   flexDirection: "column",
                 }}
               >
-                 {resource.type === "video" ? (
+                {resource.type === "video" ? (
                   <CardMedia
                     component="iframe"
-                    src={`https://www.youtube.com/embed/${resource.video_url}`}
+                    src={`https://www.youtube.com/embed/${extractVideoID(
+                      resource.video_url
+                    )}`}
                     title={resource.name}
                     allowFullScreen
                   />
@@ -95,11 +98,12 @@ const ResourcesPage = () => {
                   <Typography>{resource.description}</Typography>
                 </CardContent>
                 <CardActions>
-                <Button
+                  <Button
                     component={Link}
                     to={`/resources/${resource.id}`}
                     key={resource.id}
-                    size="small">
+                    size="small"
+                  >
                     View
                   </Button>
                 </CardActions>

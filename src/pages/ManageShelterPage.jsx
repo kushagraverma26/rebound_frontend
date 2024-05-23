@@ -1,4 +1,4 @@
-import RoofingIcon from "@mui/icons-material/Roofing";
+import NightShelterIcon from "@mui/icons-material/NightShelter";
 import {
   Box,
   Button,
@@ -15,7 +15,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useQueryClient } from "@tanstack/react-query";
-import AddShelterModal from "../components/AddSHelterModal";
+import AddShelterModal from "../components/AddShelterModal";
 import EditShelterModal from "../components/EditShelterModal";
 import { getShelterData } from "../hooks/useShelterData";
 import { useShelterAdd } from "../hooks/useShelterAdd";
@@ -37,7 +37,7 @@ const ManageShelterPage = () => {
   const { isPending, isError, data, error } = getShelterData();
 
   const addShelterMutation = useShelterAdd();
-  const editShelterMutation = useShelterUpdate();
+  const updateShelterMutation = useShelterUpdate();
   const deleteShelterMutation = useShelterDelete();
 
   const queryClient = useQueryClient();
@@ -50,7 +50,42 @@ const ManageShelterPage = () => {
   // For edit modal
   // Handle Edit submit
   const handleEdiSubmit = (formData) => {
-    console.log("Submitting edit form data:", formData);
+    const name = formData?.name;
+    const type = formData?.type;
+    const description = formData?.description;
+    const contactPerson = formData?.contactPerson;
+    const phoneNumber = formData?.phoneNumber;
+    const email = formData?.email;
+    const address = formData?.address;
+    const id = formData?.id;
+
+    updateShelterMutation.mutate(
+      {
+        id,
+        data: {
+          name,
+          type,
+          description,
+          contactPerson,
+          phoneNumber,
+          email,
+          address,
+        },
+      },
+      {
+        onSuccess: (data) => {
+          // On successful updation, show message
+          handleEditModalClose();
+          setModalMessage("Shelter Updated successfully");
+          setOpen(true);
+          queryClient.invalidateQueries({ queryKey: ["shelters"] });
+        },
+        onError: (error) => {
+          setModalMessage("Something went wrong. Please try again!");
+          setOpen(true);
+        },
+      }
+    );
   };
 
   // Shelter Edit modal
@@ -111,10 +146,23 @@ const ManageShelterPage = () => {
     setAddModalOpen(true);
   };
 
-  // FOr delete
+  // For delete
   const handleDelete = (shelter) => {
-    // Implement API call to delete shelter
-    console.log("Delete shelter:", shelter);
+    const id = shelter?.id;
+
+    deleteShelterMutation.mutate(id, {
+      onSuccess: (data) => {
+        // On successful deletion, show message
+        handleAddModalClose();
+        setModalMessage("Shelter deleted successfully");
+        setOpen(true);
+        queryClient.invalidateQueries({ queryKey: ["shelters"] });
+      },
+      onError: (error) => {
+        setModalMessage("Something went wrong. Please try again!");
+        setOpen(true);
+      },
+    });
   };
 
   if (isPending) return <LoadingPage message="Please Wait..." />;
@@ -177,7 +225,7 @@ const ManageShelterPage = () => {
                     backgroundSize: "cover",
                   }}
                 >
-                  <RoofingIcon color="primary" sx={{ fontSize: 150 }} />
+                  <NightShelterIcon color="primary" sx={{ fontSize: 150 }} />
                 </CardMedia>
                 <CardContent sx={{ flexGrow: 1, padding: "16px" }}>
                   <Typography

@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { axiosDelete } from "./useAPI";
 
-export const useShelterDelete = () =>
+export const useResourceDelete = () =>
   useMutation({
-    mutationFn: (id) => axiosDelete(`/shelters/delete/${id}`),
+    mutationFn: (id) => axiosDelete(`/resources/delete/${id}`),
   });

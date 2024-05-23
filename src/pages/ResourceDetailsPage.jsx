@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -11,16 +11,17 @@ import {
   InputLabel,
   Select,
   MenuItem,
-} from '@mui/material';
-import { getResourceDetails } from '../hooks/useResourceDetails';
-import LoadingPage from './LoadingPage';
-import ErrorPage from './ErrorPage';
+} from "@mui/material";
+import { getResourceDetails } from "../hooks/useResourceDetails";
+import { extractVideoID } from "../utils/helpers";
+import LoadingPage from "./LoadingPage";
+import ErrorPage from "./ErrorPage";
 
 const ResourceDetailsPage = () => {
   const { id } = useParams();
-  const { data, loading, error } = getResourceDetails(id);
-  const [selectedLanguage, setSelectedLanguage] = useState('');
-  const [translatedDetails, setTranslatedDetails] = useState('');
+  const { isPending, isError, data, error } = getResourceDetails(id);
+  const [selectedLanguage, setSelectedLanguage] = useState("");
+  const [translatedDetails, setTranslatedDetails] = useState("");
 
   const handleLanguageChange = (event) => {
     setSelectedLanguage(event.target.value);
@@ -32,31 +33,33 @@ const ResourceDetailsPage = () => {
       // const response = await fetch(`/api/translation?text=${encodeURIComponent(text)}&language=${language}`);
       // const translatedData = await response.json();
       let translatedData = {
-        "translatedText": "Yayy"
-      }
+        translatedText: "Yayy",
+      };
       setTranslatedDetails(translatedData.translatedText);
     } catch (error) {
-      console.error('Error translating resource details:', error);
+      console.error("Error translating resource details:", error);
     }
   };
 
-  if (loading) {
+  if (isPending) {
     return <LoadingPage message="Please Wait..." />;
   }
 
-  if (error) {
+  if (isError) {
     return <ErrorPage />;
   }
 
   return (
     <Container sx={{ py: 8 }} maxWidth="md">
       <Paper sx={{ p: 4 }}>
-        {data.type === 'video' && data.video_url && (
+        {data.type === "video" && data.video_url && (
           <CardMedia
             component="iframe"
-            src={`https://www.youtube.com/embed/${data.video_url}`}
+            src={`https://www.youtube.com/embed/${extractVideoID(
+              data.video_url
+            )}`}
             title={data.name}
-            sx={{ mb: 4, height: '400px' }}
+            sx={{ mb: 4, height: "400px" }}
           />
         )}
         <FormControl fullWidth sx={{ mb: 4 }}>
@@ -79,13 +82,14 @@ const ResourceDetailsPage = () => {
           {data.name}
         </Typography>
         <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-          Created by: {data.created_by} on {new Date(data.created_date).toLocaleDateString()}
+          Created by: {data.created_by} on{" "}
+          {new Date(data.created_date).toLocaleDateString()}
         </Typography>
         <Typography variant="body1" gutterBottom>
           {data.description}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-        {translatedDetails || data.details}
+          {translatedDetails || data.details}
         </Typography>
       </Paper>
     </Container>

@@ -5,37 +5,58 @@ import {
   Typography,
   TextField,
   Button,
+  MenuItem,
 } from "@mui/material";
 
 const EditResourceModal = ({ resource, open, onClose, onSubmit }) => {
-    const [formData, setFormData] = useState({
-        name: "",
-        type: "",
-        description: "",
-        details: "",
-        videoUrl: "",
+  const [formData, setFormData] = useState({
+    name: "",
+    type: "",
+    description: "",
+    details: "",
+    videoUrl: "",
+  });
+
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (resource) {
+      setFormData({
+        id: resource.id || "",
+        name: resource.name || "",
+        type: resource.type || "",
+        description: resource.description || "",
+        details: resource.details || "",
+        videoUrl: resource.video_url || "",
       });
-    
-      useEffect(() => {
-        if (resource) {
-          setFormData({
-            name: resource.name || "",
-            type: resource.type || "",
-            description: resource.description || "",
-            details: resource.details || "",
-            videoUrl: resource.video_url || "",
-          });
-        }
-      }, [resource]);
+    }
+  }, [resource]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = () => {
-    onSubmit(formData);
-    onClose();
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.name) newErrors.name = "Name is required";
+    if (!formData.type) newErrors.type = "Type is required";
+    if (!formData.description)
+      newErrors.description = "Description is required";
+    if (!formData.details) newErrors.details = "Details are required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (validate()) {
+      onSubmit(formData);
+      onClose();
+    }
   };
 
   return (
@@ -57,51 +78,79 @@ const EditResourceModal = ({ resource, open, onClose, onSubmit }) => {
         <Typography variant="h6" gutterBottom>
           Edit Resource
         </Typography>
-        <form onSubmit={handleSubmit}>
+        <Box component="form" onSubmit={handleSubmit}>
           <TextField
-            fullWidth
-            margin="normal"
             name="name"
             label="Name"
+            required
+            fullWidth
             value={formData.name}
             onChange={handleChange}
+            sx={{ mb: 2 }}
+            error={!!errors.name}
+            helperText={errors.name}
           />
           <TextField
-            fullWidth
-            margin="normal"
+            select
             name="type"
             label="Type"
+            required
+            fullWidth
             value={formData.type}
             onChange={handleChange}
-          />
+            sx={{ mb: 2, textAlign: "left" }}
+            error={!!errors.type}
+            helperText={errors.type}
+          >
+            <MenuItem value="video">Video</MenuItem>
+            <MenuItem value="text">Text</MenuItem>
+          </TextField>
           <TextField
-            fullWidth
-            margin="normal"
             name="description"
             label="Description"
+            required
+            fullWidth
+            multiline
+            rows={4}
             value={formData.description}
             onChange={handleChange}
+            sx={{ mb: 2 }}
+            error={!!errors.description}
+            helperText={errors.description}
           />
           <TextField
-            fullWidth
-            margin="normal"
             name="details"
             label="Details"
+            required
+            fullWidth
+            multiline
+            rows={4}
             value={formData.details}
             onChange={handleChange}
+            sx={{ mb: 2 }}
+            error={!!errors.details}
+            helperText={errors.details}
           />
           <TextField
-            fullWidth
-            margin="normal"
             name="videoUrl"
             label="Video URL"
+            required={formData.type === "video"}
+            fullWidth
             value={formData.videoUrl}
             onChange={handleChange}
+            sx={{ mb: 2 }}
+            error={!!errors.videoUrl}
+            helperText={errors.videoUrl}
           />
-          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}> 
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2 }}
+          >
             Submit
           </Button>
-        </form>
+        </Box>
       </Box>
     </Modal>
   );

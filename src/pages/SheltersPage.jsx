@@ -11,7 +11,7 @@ import {
   Button,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import RoofingIcon from "@mui/icons-material/Roofing";
+import NightShelterIcon from "@mui/icons-material/NightShelter";
 import { getShelterData } from "../hooks/useShelterData";
 import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
@@ -70,7 +70,7 @@ const SheltersPage = () => {
                     backgroundSize: "cover",
                   }}
                 >
-                  <RoofingIcon color="primary" sx={{ fontSize: 150 }} />
+                  <NightShelterIcon color="primary" sx={{ fontSize: 150 }} />
                 </CardMedia>
                 <CardContent sx={{ flexGrow: 1, padding: "16px" }}>
                   <Typography
