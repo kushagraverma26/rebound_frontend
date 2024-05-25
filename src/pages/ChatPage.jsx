@@ -1,6 +1,15 @@
 import React, { useState } from "react";
-import { Container, Grid, Paper, Typography, TextField, Button, MenuItem, Box } from "@mui/material";
-import SendIcon from '@mui/icons-material/Send';
+import {
+  Container,
+  Grid,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  MenuItem,
+  Box,
+} from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
 
 const ChatsPage = () => {
   const [messages, setMessages] = useState([
@@ -9,7 +18,7 @@ const ChatsPage = () => {
   ]);
 
   const [inputMessage, setInputMessage] = useState("");
-  const [selectedLanguage, setSelectedLanguage] = useState("English"); // Set English as default language
+  const [selectedLanguage, setSelectedLanguage] = useState("en"); // Set English as default language
 
   const handleSendMessage = (sender) => {
     if (inputMessage.trim() !== "") {
@@ -41,16 +50,16 @@ const ChatsPage = () => {
             onChange={handleLanguageChange}
             sx={{ width: "100%" }}
           >
-            <MenuItem value="English">English</MenuItem>
-            <MenuItem value="Spanish">Spanish</MenuItem>
-            <MenuItem value="Chinese">Chinese</MenuItem>
-            <MenuItem value="Tagalog">Tagalog</MenuItem>
-            <MenuItem value="Vietnamese">Vietnamese</MenuItem>
-            <MenuItem value="Korean">Korean</MenuItem>
-            <MenuItem value="Arabic">Arabic</MenuItem>
-            <MenuItem value="French">French</MenuItem>
-            <MenuItem value="Hindi">Hindi</MenuItem>
-            <MenuItem value="Japanese">Japanese</MenuItem>
+            <MenuItem value="en">English</MenuItem>
+            <MenuItem value="es">Spanish</MenuItem>
+            <MenuItem value="zh-cn">Chinese (Simplified)</MenuItem>
+            <MenuItem value="tl">Tagalog</MenuItem>
+            <MenuItem value="vi">Vietnamese</MenuItem>
+            <MenuItem value="ko">Korean</MenuItem>
+            <MenuItem value="ar">Arabic</MenuItem>
+            <MenuItem value="fr">French</MenuItem>
+            <MenuItem value="hi">Hindi</MenuItem>
+            <MenuItem value="ja">Japanese</MenuItem>
           </TextField>
         </Grid>
         <Grid item xs={12}>
@@ -69,7 +78,8 @@ const ChatsPage = () => {
                 key={index}
                 variant="body1"
                 sx={{
-                  alignSelf: message.sender === "Me" ? "flex-end" : "flex-start",
+                  alignSelf:
+                    message.sender === "Me" ? "flex-end" : "flex-start",
                   bgcolor: message.sender === "Me" ? "#3f51b5" : "#f50057",
                   color: "#fff",
                   padding: "10px",
@@ -97,7 +107,7 @@ const ChatsPage = () => {
               variant="contained"
               color="primary"
               onClick={() => handleSendMessage("Me")}
-              sx={{ ml: 2, height: '56px' }}
+              sx={{ ml: 2, height: "56px" }}
               endIcon={<SendIcon />}
             >
               Send
