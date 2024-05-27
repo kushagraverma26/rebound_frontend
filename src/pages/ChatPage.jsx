@@ -8,23 +8,120 @@ import {
   Button,
   MenuItem,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
+import { useChat } from "../hooks/useChat";
+import { useTranslate } from "../hooks/useTranslate";
 
 const ChatsPage = () => {
+  const [inputMessage, setInputMessage] = useState("");
+  // Array used when displaying the chat
   const [messages, setMessages] = useState([
-    { sender: "Me", content: "Hi there!" },
-    { sender: "Assistant", content: "Hello! How can I assist you today?" },
+    {
+      role: "system",
+      content:
+        "You are an empathetic chat assistant, skilled in dealing with people in distress and understanding their frustations. Provide answers using calming language. Any questions mentioning the word shelter or food should tell user to follow links on the website. Keep your answers short and breif.",
+    },
+    { role: "assistant", content: "Hello! How can I assist you today?" },
+  ]);
+  // Array used for api calls
+  const [messagesForAPI, setMessagesForAPI] = useState([
+    {
+      role: "system",
+      content:
+        "You are an empathetic chat assistant, skilled in dealing with people in distress and understanding their frustations. Provide answers using calming language. Any questions mentioning the word shelter or food should tell user to follow links on the website. Keep your answers short and breif.",
+    },
+    { role: "assistant", content: "Hello! How can I assist you today?" },
   ]);
 
-  const [inputMessage, setInputMessage] = useState("");
-  const [selectedLanguage, setSelectedLanguage] = useState("en"); // Set English as default language
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
 
-  const handleSendMessage = (sender) => {
+  const chatMutation = useChat();
+  const translationMutation = useTranslate();
+
+  const handleSendMessage = async () => {
     if (inputMessage.trim() !== "") {
-      setMessages([...messages, { sender, content: inputMessage }]);
+      // Update the messages state with the user's message
+      const previousChat = JSON.parse(JSON.stringify(messages));
+      const newMessages = [
+        ...messages,
+        { role: "user", content: inputMessage },
+      ];
+      setMessages(newMessages);
+
+      // Clear the input field
       setInputMessage("");
+
+      // Add a loading indicator
+      setMessages([...newMessages, { role: "assistant", content: "..." }]);
+
+      // Translate the user's message to English if needed
+      let translatedMessage = inputMessage;
+      if (selectedLanguage !== "en") {
+        // Translate to english
+        const translationResponse = await translate(
+          inputMessage,
+          selectedLanguage,
+          "en"
+        );
+        translatedMessage = translationResponse.translatedText;
+      }
+
+      const updatedDataForAPI = [
+        ...messagesForAPI,
+        { role: "user", content: translatedMessage },
+      ];
+      setMessagesForAPI(updatedDataForAPI);
+
+      // Remove the loading indicator and update with the API response
+      chatMutation.mutate(
+        {
+          chatData: updatedDataForAPI,
+        },
+        {
+          onSuccess: async (data) => {
+            let chatbotResponse = data.response;
+            // API needs english only
+            setMessagesForAPI((prevMessagesForAPI) => [
+              ...prevMessagesForAPI,
+              { role: "assistant", content: chatbotResponse },
+            ]);
+
+            // Translate back to requested language for rendering
+            // User needs to see in selected language
+            if (selectedLanguage !== "en") {
+              // Translate to source
+              const translationResponse = await translate(
+                chatbotResponse,
+                "en",
+                selectedLanguage
+              );
+              chatbotResponse = translationResponse.translatedText;
+            }
+
+            setMessages((prevMessages) => [
+              ...prevMessages.slice(0, -1), // Remove the loading indicator
+              { role: "assistant", content: chatbotResponse },
+            ]);
+          },
+          onError: (error) => {
+            console.error("Error fetching chat response:", error);
+            setMessages((prevMessages) => prevMessages.slice(0, -1)); // Remove the loading indicator
+          },
+        }
+      );
     }
+  };
+
+  // Translate the message to English
+  const translate = async (inputText, sourceLanguage, destLanguage) => {
+    const translation = await translationMutation.mutateAsync({
+      inputText,
+      sourceLanguage,
+      destLanguage,
+    });
+    return translation;
   };
 
   const handleLanguageChange = (event) => {
@@ -73,25 +170,30 @@ const ChatsPage = () => {
               flexDirection: "column",
             }}
           >
-            {messages.map((message, index) => (
-              <Typography
-                key={index}
-                variant="body1"
-                sx={{
-                  alignSelf:
-                    message.sender === "Me" ? "flex-end" : "flex-start",
-                  bgcolor: message.sender === "Me" ? "#3f51b5" : "#f50057",
-                  color: "#fff",
-                  padding: "10px",
-                  borderRadius: "10px",
-                  mt: 1,
-                  maxWidth: "70%",
-                  wordBreak: "break-word",
-                }}
-              >
-                {message.content}
-              </Typography>
-            ))}
+            {messages
+              .filter(
+                (message) =>
+                  message.role === "user" || message.role === "assistant"
+              )
+              .map((message, index) => (
+                <Typography
+                  key={index}
+                  variant="body1"
+                  sx={{
+                    alignSelf:
+                      message.role === "user" ? "flex-end" : "flex-start",
+                    bgcolor: message.role === "user" ? "#3f51b5" : "#f50057",
+                    color: "#fff",
+                    padding: "10px",
+                    borderRadius: "10px",
+                    mt: 1,
+                    maxWidth: "70%",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {message.content}
+                </Typography>
+              ))}
           </Paper>
         </Grid>
         <Grid item xs={12}>
@@ -100,29 +202,20 @@ const ChatsPage = () => {
               fullWidth
               variant="outlined"
               label="Type your message"
+              name="inputMessage"
               value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
+              onChange={(event) => setInputMessage(event.target.value)}
             />
             <Button
               variant="contained"
               color="primary"
-              onClick={() => handleSendMessage("Me")}
-              sx={{ ml: 2, height: "56px" }}
+              onClick={handleSendMessage}
+              sx={{ ml: 2, height: "50px" }} // Adjusted height
               endIcon={<SendIcon />}
             >
               Send
             </Button>
           </Box>
-        </Grid>
-        <Grid item xs={12} sx={{ textAlign: "center", mt: 2 }}>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => handleSendMessage("Assistant")}
-            sx={{ mt: 2 }}
-          >
-            Send from Assistant
-          </Button>
         </Grid>
       </Grid>
     </Container>
