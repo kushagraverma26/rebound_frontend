@@ -6,12 +6,14 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import { Link } from "react-router-dom";
+import { useTheme, useMediaQuery } from "@mui/material";
 
 const HomePage = () => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
   const featuredContent = [
     {
       title: "Exploring Resources",
@@ -21,7 +23,7 @@ const HomePage = () => {
     {
       title: "Get Help in Your Own Language",
       description:
-        "Chat in the language you are most comfortable in. Connect with social workers and get immidiate assistance.",
+        "Chat in the language you are most comfortable in. Connect with social workers and get immediate assistance.",
     },
     {
       title: "Stories of Resilience",
@@ -31,22 +33,27 @@ const HomePage = () => {
   ];
 
   return (
-    <Box height="80vh" display="flex" flexDirection="column" padding={2}>
-      <Container maxWidth={false} style={{ height: "80vh" }}>
-        <Grid container spacing={3} style={{ height: "80vh" }}>
+    <Box
+      display="flex"
+      flexDirection="column"
+      padding={2}
+      sx={{ height: "auto", minHeight: "75vh" }}
+    >
+      <Container maxWidth="lg" sx={{ height: "100%" }}>
+        <Grid container spacing={3} alignItems="stretch">
           {/* Left Half */}
           <Grid item xs={12} md={6}>
             <Paper
-              style={{
+              sx={{
                 height: "100%",
-                padding: "20px",
+                padding: 4,
                 textAlign: "center",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
               }}
             >
-              <Typography variant="h4" gutterBottom>
+              <Typography variant={isSmallScreen ? "h5" : "h4"} gutterBottom>
                 Welcome to Rebound
               </Typography>
               <Typography variant="body1">
@@ -61,22 +68,33 @@ const HomePage = () => {
           {/* Right Half */}
           <Grid item xs={12} md={6}>
             <Paper
-              style={{
+              sx={{
                 height: "100%",
-                padding: "20px",
+                padding: 4,
                 textAlign: "center",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "space-between"
+                justifyContent: "space-between",
               }}
             >
-              <Typography variant="h4" gutterBottom alignSelf="top">
+              <Typography
+                variant={isSmallScreen ? "h5" : "h4"}
+                gutterBottom
+                alignSelf="top"
+              >
                 Featured
               </Typography>
               <Grid container spacing={2}>
                 {featuredContent.map((item, index) => (
-                  <Grid item key={index} xs={12} component={Link} to="/" style={{textDecoration: "none"}}>
-                    <Card elevation={3} style={{ borderRadius: "20px" }}>
+                  <Grid
+                    item
+                    key={index}
+                    xs={12}
+                    component={Link}
+                    to="/"
+                    sx={{ textDecoration: "none" }}
+                  >
+                    <Card elevation={3} sx={{ borderRadius: "20px" }}>
                       <CardHeader title={item.title} />
                       <CardContent>
                         <Typography
@@ -91,7 +109,6 @@ const HomePage = () => {
                   </Grid>
                 ))}
               </Grid>
-              <Box></Box>
             </Paper>
           </Grid>
         </Grid>

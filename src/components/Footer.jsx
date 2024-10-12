@@ -11,7 +11,7 @@ const Footer = () => {
         color="text.secondary"
         component="p"
       >
-        Kushagra Verma - Spring 2024 Masters Project
+        Kushagra Verma - Fall 2024 Masters Project
       </Typography>
       {/* <Typography variant="subtitle1" align="center" color="text.secondary">
         {new Date().getFullYear()}
