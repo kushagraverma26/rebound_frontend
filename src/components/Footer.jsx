@@ -13,9 +13,6 @@ const Footer = () => {
       >
         Kushagra Verma - Fall 2024 Masters Project
       </Typography>
-      {/* <Typography variant="subtitle1" align="center" color="text.secondary">
-        {new Date().getFullYear()}
-      </Typography> */}
     </Box>
   );
 };

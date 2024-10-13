@@ -42,7 +42,6 @@ const ChatsPage = () => {
 
   const handleSendMessage = async () => {
     if (inputMessage.trim() !== "") {
-      // Update the messages state with the user's message
       const previousChat = JSON.parse(JSON.stringify(messages));
       const newMessages = [
         ...messages,
@@ -50,16 +49,12 @@ const ChatsPage = () => {
       ];
       setMessages(newMessages);
 
-      // Clear the input field
       setInputMessage("");
 
-      // Add a loading indicator
       setMessages([...newMessages, { role: "assistant", content: "..." }]);
 
-      // Translate the user's message to English if needed
       let translatedMessage = inputMessage;
       if (selectedLanguage !== "en") {
-        // Translate to english
         const translationResponse = await translate(
           inputMessage,
           selectedLanguage,
@@ -74,7 +69,6 @@ const ChatsPage = () => {
       ];
       setMessagesForAPI(updatedDataForAPI);
 
-      // Remove the loading indicator and update with the API response
       chatMutation.mutate(
         {
           chatData: updatedDataForAPI,
@@ -101,13 +95,13 @@ const ChatsPage = () => {
             }
 
             setMessages((prevMessages) => [
-              ...prevMessages.slice(0, -1), // Remove the loading indicator
+              ...prevMessages.slice(0, -1),
               { role: "assistant", content: chatbotResponse },
             ]);
           },
           onError: (error) => {
             console.error("Error fetching chat response:", error);
-            setMessages((prevMessages) => prevMessages.slice(0, -1)); // Remove the loading indicator
+            setMessages((prevMessages) => prevMessages.slice(0, -1));
           },
         }
       );
@@ -128,23 +122,19 @@ const ChatsPage = () => {
     const newLanguage = event.target.value;
     setSelectedLanguage(newLanguage);
 
-    // Check if only the assistant's greeting message is present and no user input yet
     const currentGreeting = messages[1].content;
 
-    // Check if the current greeting matches any of the translations
     const isInitialGreeting =
       Object.values(greetingTranslations).includes(currentGreeting);
 
     if (messages.length === 2 && isInitialGreeting) {
-      // Get the translated greeting from the hardcoded translations
       const translatedGreeting =
         greetingTranslations[newLanguage] ||
         "Hello! How can I assist you today?";
 
-      // Update the greeting message in the messages array
       setMessages([
-        messages[0], // Keep the system message the same
-        { role: "assistant", content: translatedGreeting }, // Update the assistant message
+        messages[0],
+        { role: "assistant", content: translatedGreeting },
       ]);
     }
   };
@@ -251,7 +241,7 @@ const ChatsPage = () => {
               label={
                 messageLabelTranslations[selectedLanguage] ||
                 "Type your message"
-              } // Use translation or default to English
+              }
               name="inputMessage"
               value={inputMessage}
               onChange={(event) => setInputMessage(event.target.value)}
@@ -260,7 +250,7 @@ const ChatsPage = () => {
               variant="contained"
               color="primary"
               onClick={handleSendMessage}
-              sx={{ ml: 2, height: "50px" }} // Adjusted height
+              sx={{ ml: 2, height: "50px" }}
               endIcon={<SendIcon />}
             >
               Send

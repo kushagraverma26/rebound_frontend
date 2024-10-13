@@ -92,7 +92,6 @@ const SignUp = () => {
       },
       {
         onSuccess: (data) => {
-          // On successful signup, login the user
           login(data);
           navigate("/admin");
         },
