@@ -125,7 +125,54 @@ const ChatsPage = () => {
   };
 
   const handleLanguageChange = (event) => {
-    setSelectedLanguage(event.target.value);
+    const newLanguage = event.target.value;
+    setSelectedLanguage(newLanguage);
+
+    // Check if only the assistant's greeting message is present and no user input yet
+    const currentGreeting = messages[1].content;
+
+    // Check if the current greeting matches any of the translations
+    const isInitialGreeting =
+      Object.values(greetingTranslations).includes(currentGreeting);
+
+    if (messages.length === 2 && isInitialGreeting) {
+      // Get the translated greeting from the hardcoded translations
+      const translatedGreeting =
+        greetingTranslations[newLanguage] ||
+        "Hello! How can I assist you today?";
+
+      // Update the greeting message in the messages array
+      setMessages([
+        messages[0], // Keep the system message the same
+        { role: "assistant", content: translatedGreeting }, // Update the assistant message
+      ]);
+    }
+  };
+
+  const greetingTranslations = {
+    en: "Hello! How can I assist you today?",
+    es: "¡Hola! ¿Cómo puedo asistirte hoy?",
+    "zh-cn": "你好！我今天能帮您什么吗？",
+    tl: "Kumusta! Paano kita matutulungan ngayon?",
+    vi: "Xin chào! Tôi có thể giúp gì cho bạn hôm nay?",
+    ko: "안녕하세요! 오늘 어떻게 도와드릴까요?",
+    ar: "مرحبًا! كيف يمكنني مساعدتك اليوم؟",
+    fr: "Bonjour ! Comment puis-je vous aider aujourd'hui ?",
+    hi: "नमस्ते! मैं आज आपकी कैसे सहायता कर सकता हूँ?",
+    ja: "こんにちは！今日はどのようにお手伝いできますか？",
+  };
+
+  const messageLabelTranslations = {
+    en: "Type your message",
+    es: "Escribe tu mensaje",
+    "zh-cn": "输入你的信息",
+    tl: "I-type ang iyong mensahe",
+    vi: "Nhập tin nhắn của bạn",
+    ko: "메시지를 입력하세요",
+    ar: "اكتب رسالتك",
+    fr: "Tapez votre message",
+    hi: "अपना संदेश टाइप करें",
+    ja: "メッセージを入力してください",
   };
 
   return (
@@ -201,7 +248,10 @@ const ChatsPage = () => {
             <TextField
               fullWidth
               variant="outlined"
-              label="Type your message"
+              label={
+                messageLabelTranslations[selectedLanguage] ||
+                "Type your message"
+              } // Use translation or default to English
               name="inputMessage"
               value={inputMessage}
               onChange={(event) => setInputMessage(event.target.value)}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
@@ -14,21 +14,32 @@ const HomePage = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
+  // States to trigger slide animation
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    // Trigger the animation when the component mounts
+    setLoaded(true);
+  }, []);
+
   const featuredContent = [
     {
       title: "Exploring Resources",
       description:
         "Discover a wealth of resources to support your journey toward stability.",
+      link: "/resources", // Link to Resources page
+    },
+    {
+      title: "Finding Shelters",
+      description:
+        "Locate safe and reliable shelters near you, offering temporary or long-term housing solutions.",
+      link: "/shelters", // Link to Shelters page
     },
     {
       title: "Get Help in Your Own Language",
       description:
         "Chat in the language you are most comfortable in. Connect with social workers and get immediate assistance.",
-    },
-    {
-      title: "Stories of Resilience",
-      description:
-        "Read inspiring stories of students who overcame challenges and found success.",
+      link: "/chat", // Link to Chat page
     },
   ];
 
@@ -37,12 +48,21 @@ const HomePage = () => {
       display="flex"
       flexDirection="column"
       padding={2}
-      sx={{ height: "auto", minHeight: "75vh" }}
+      sx={{ height: "auto", minHeight: "90vh" }}
     >
       <Container maxWidth="lg" sx={{ height: "100%" }}>
         <Grid container spacing={3} alignItems="stretch">
-          {/* Left Half */}
-          <Grid item xs={12} md={6}>
+          {/* Left Half - Welcome Section */}
+          <Grid
+            item
+            xs={12}
+            md={6}
+            sx={{
+              opacity: loaded ? 1 : 0, // Fade in effect
+              transform: loaded ? "translateY(0)" : "translateY(100px)", // Slide up effect
+              transition: "opacity 0.8s ease-out, transform 0.8s ease-out", // Transition properties
+            }}
+          >
             <Paper
               sx={{
                 height: "100%",
@@ -65,8 +85,17 @@ const HomePage = () => {
             </Paper>
           </Grid>
 
-          {/* Right Half */}
-          <Grid item xs={12} md={6}>
+          {/* Right Half - Featured Section */}
+          <Grid
+            item
+            xs={12}
+            md={6}
+            sx={{
+              opacity: loaded ? 1 : 0, // Fade in effect
+              transform: loaded ? "translateY(0)" : "translateY(100px)", // Slide up effect
+              transition: "opacity 0.8s ease-out, transform 0.8s ease-out", // Transition properties
+            }}
+          >
             <Paper
               sx={{
                 height: "100%",
@@ -91,10 +120,19 @@ const HomePage = () => {
                     key={index}
                     xs={12}
                     component={Link}
-                    to="/"
+                    to={item.link} // Make each card clickable and redirect to the appropriate page
                     sx={{ textDecoration: "none" }}
                   >
-                    <Card elevation={3} sx={{ borderRadius: "20px" }}>
+                    <Card
+                      elevation={3}
+                      sx={{
+                        borderRadius: "20px",
+                        transition: "transform 0.3s ease-in-out", // Smooth transition
+                        "&:hover": {
+                          transform: "scale(1.05)", // Pop out effect
+                        },
+                      }}
+                    >
                       <CardHeader title={item.title} />
                       <CardContent>
                         <Typography
