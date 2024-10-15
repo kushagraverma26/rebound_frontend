@@ -11,7 +11,7 @@ import {
   Button,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import NightShelterIcon from "@mui/icons-material/NightShelter";
+import HomeIcon from "@mui/icons-material/Home"; // Replaced icon
 import { getShelterData } from "../hooks/useShelterData";
 import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
@@ -67,10 +67,12 @@ const SheltersPage = () => {
                 <CardMedia
                   sx={{
                     width: "100%",
-                    backgroundSize: "cover",
+                    textAlign: "center",
+                    padding: "16px", // Added padding for better sizing
                   }}
                 >
-                  <NightShelterIcon color="primary" sx={{ fontSize: 150 }} />
+                  <HomeIcon color="primary" sx={{ fontSize: 80 }} />{" "}
+                  {/* Replaced and resized */}
                 </CardMedia>
                 <CardContent sx={{ flexGrow: 1, padding: "16px" }}>
                   <Typography

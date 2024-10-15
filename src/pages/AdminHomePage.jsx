@@ -42,28 +42,7 @@ const AdminHomePage = () => {
           justifyContent="center" // Center the grid items horizontally
           alignItems="center" // Center the grid items vertically
         >
-          {/* Card 1: Manage Shelters */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Link to="/admin/shelters" style={{ textDecoration: "none" }}>
-              <Card
-                sx={{
-                  height: "280px", // Adjusted height for the card
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <HomeIcon sx={{ fontSize: 60 }} color="primary" />
-                  <Typography gutterBottom variant="h5" component="h2">
-                    Manage Shelters
-                  </Typography>
-                  <Typography>Click here to manage shelters.</Typography>
-                </CardContent>
-              </Card>
-            </Link>
-          </Grid>
-
-          {/* Card 2: Manage Resources */}
+          {/* Card 1: Manage Resources */}
           <Grid item xs={12} sm={6} md={4}>
             <Link to="/admin/resources" style={{ textDecoration: "none" }}>
               <Card
@@ -79,6 +58,27 @@ const AdminHomePage = () => {
                     Manage Resources
                   </Typography>
                   <Typography>Click here to manage resources.</Typography>
+                </CardContent>
+              </Card>
+            </Link>
+          </Grid>
+
+          {/* Card 2: Manage Shelters */}
+          <Grid item xs={12} sm={6} md={4}>
+            <Link to="/admin/shelters" style={{ textDecoration: "none" }}>
+              <Card
+                sx={{
+                  height: "280px", // Adjusted height for the card
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <HomeIcon sx={{ fontSize: 60 }} color="primary" />
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Manage Shelters
+                  </Typography>
+                  <Typography>Click here to manage shelters.</Typography>
                 </CardContent>
               </Card>
             </Link>

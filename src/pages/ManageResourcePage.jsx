@@ -219,7 +219,7 @@ const ManageResourcePage = () => {
                   flexDirection: "column",
                 }}
               >
-                {resource.type === "video" ? (
+                {resource.type === "video" && (
                   <CardMedia
                     component="iframe"
                     src={`https://www.youtube.com/embed/${extractVideoID(
@@ -227,16 +227,6 @@ const ManageResourcePage = () => {
                     )}`}
                     title={resource.name}
                     allowFullScreen
-                  />
-                ) : (
-                  <CardMedia
-                    component="div"
-                    sx={{
-                      pt: "56.25%",
-                      backgroundImage:
-                        "url(https://source.unsplash.com/random?wallpapers)",
-                      backgroundSize: "cover",
-                    }}
                   />
                 )}
                 <CardContent sx={{ flexGrow: 1 }}>
