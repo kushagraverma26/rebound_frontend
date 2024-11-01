@@ -46,7 +46,7 @@ const ResourceDetailsPage = () => {
     if (destLanguage === "") {
       setTranslatedDetails(data.details);
     } else {
-      const sourceLanguage = selectedLanguage || "en";
+      const sourceLanguage = flag === 0 ? selectedLanguage : transcriptLanguage;
       let inputText = flag === 0 ? data.details : transcript;
       translateData(inputText, sourceLanguage, destLanguage, flag);
     }
