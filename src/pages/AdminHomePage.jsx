@@ -52,8 +52,8 @@ const AdminHomePage = () => {
                   flexDirection: "column",
                 }}
               >
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <BusinessIcon sx={{ fontSize: 60 }} color="primary" />
+                <CardContent sx={{ flexGrow: 1, textAlign: "center" }}>
+                  <BusinessIcon sx={{ fontSize: 100 }} color="primary" />
                   <Typography gutterBottom variant="h5" component="h2">
                     Manage Resources
                   </Typography>
@@ -73,8 +73,8 @@ const AdminHomePage = () => {
                   flexDirection: "column",
                 }}
               >
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <HomeIcon sx={{ fontSize: 60 }} color="primary" />
+                <CardContent sx={{ flexGrow: 1, textAlign: "center" }}>
+                  <HomeIcon sx={{ fontSize: 100 }} color="primary" />
                   <Typography gutterBottom variant="h5" component="h2">
                     Manage Shelters
                   </Typography>
@@ -94,8 +94,8 @@ const AdminHomePage = () => {
                   flexDirection: "column",
                 }}
               >
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <DashboardIcon sx={{ fontSize: 60 }} color="primary" />
+                <CardContent sx={{ flexGrow: 1, textAlign: "center" }}>
+                  <DashboardIcon sx={{ fontSize: 100 }} color="primary" />
                   <Typography gutterBottom variant="h5" component="h2">
                     Dashboard
                   </Typography>

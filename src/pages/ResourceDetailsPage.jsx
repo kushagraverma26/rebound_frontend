@@ -25,7 +25,7 @@ import ErrorPage from "./ErrorPage";
 const ResourceDetailsPage = () => {
   const { id } = useParams();
   const { isPending, isError, data, error } = getResourceDetails(id);
-  const [selectedLanguage, setSelectedLanguage] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [translatedDetails, setTranslatedDetails] = useState("");
   const [isTranscriptModalOpen, setTranscriptModalOpen] = useState(false);
   const [transcriptLanguage, setTranscriptLanguage] = useState("en");
@@ -44,7 +44,13 @@ const ResourceDetailsPage = () => {
     else if (flag === 1) setTranscriptLanguage(destLanguage);
 
     if (destLanguage === "") {
-      setTranslatedDetails(data.details);
+      if (flag === 0) {
+        setTranslatedDetails(data.details);
+        setSelectedLanguage("en");
+      } else {
+        generateTranscript(extractVideoID(data.video_url), "en");
+        setTranscriptLanguage("en");
+      }
     } else {
       const sourceLanguage = flag === 0 ? selectedLanguage : transcriptLanguage;
       let inputText = flag === 0 ? data.details : transcript;

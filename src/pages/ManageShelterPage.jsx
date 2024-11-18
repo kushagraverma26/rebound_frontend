@@ -1,4 +1,3 @@
-import NightShelterIcon from "@mui/icons-material/NightShelter";
 import {
   Box,
   Button,
@@ -13,6 +12,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import HomeIcon from "@mui/icons-material/Home";
 
 import { useQueryClient } from "@tanstack/react-query";
 import AddShelterModal from "../components/AddShelterModal";
@@ -194,7 +194,7 @@ const ManageShelterPage = () => {
             color="text.secondary"
             paragraph
           >
-            Find information about available shelters in your area.
+            Manage shelters by adding, updating, and deleting information.
           </Typography>
         </Container>
       </Box>
@@ -215,17 +215,17 @@ const ManageShelterPage = () => {
                 sx={{
                   display: "flex",
                   flexDirection: "column",
-                  borderRadius: "20px",
+                  height: "100%",
                   overflow: "hidden",
                 }}
               >
                 <CardMedia
                   sx={{
                     width: "100%",
-                    backgroundSize: "cover",
+                    textAlign: "center",
                   }}
                 >
-                  <NightShelterIcon color="primary" sx={{ fontSize: 150 }} />
+                  <HomeIcon color="primary" sx={{ fontSize: 80 }} />
                 </CardMedia>
                 <CardContent sx={{ flexGrow: 1, padding: "16px" }}>
                   <Typography

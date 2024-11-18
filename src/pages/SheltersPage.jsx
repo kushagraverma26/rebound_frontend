@@ -11,7 +11,7 @@ import {
   Button,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import HomeIcon from "@mui/icons-material/Home"; // Replaced icon
+import HomeIcon from "@mui/icons-material/Home";
 import { getShelterData } from "../hooks/useShelterData";
 import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
@@ -60,7 +60,7 @@ const SheltersPage = () => {
                 sx={{
                   display: "flex",
                   flexDirection: "column",
-                  borderRadius: "20px",
+                  height: "100%",
                   overflow: "hidden",
                 }}
               >
@@ -68,10 +68,9 @@ const SheltersPage = () => {
                   sx={{
                     width: "100%",
                     textAlign: "center",
-                    padding: "16px", // Added padding for better sizing
                   }}
                 >
-                  <HomeIcon color="primary" sx={{ fontSize: 80 }} />{" "}
+                  <HomeIcon color="primary" sx={{ fontSize: 80 }} />
                   {/* Replaced and resized */}
                 </CardMedia>
                 <CardContent sx={{ flexGrow: 1, padding: "16px" }}>

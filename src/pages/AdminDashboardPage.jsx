@@ -371,11 +371,38 @@ const AdminDashboardPage = () => {
 
   return (
     <Container>
+      <Box
+        sx={{
+          bgcolor: "background.paper",
+          pt: 8,
+          pb: 6,
+        }}
+      >
+        <Container maxWidth="md">
+          <Typography
+            component="h1"
+            variant="h2"
+            align="center"
+            color="text.primary"
+            gutterBottom
+          >
+            Dashboard
+          </Typography>
+          <Typography
+            variant="h5"
+            align="center"
+            color="text.secondary"
+            paragraph
+          >
+            Gain insights into trends through visualizations.
+          </Typography>
+        </Container>
+      </Box>
       {/* ASI Food Pantry Data Section */}
       <Typography variant="h3" align="center" gutterBottom sx={{ mt: 6 }}>
         ASI Food Pantry Data
       </Typography>
-      <Typography variant="h5" align="center" gutterBottom sx={{ mt: 4 }}>
+      <Typography variant="h4" align="center" gutterBottom sx={{ mt: 4 }}>
         Pantry Usage Statistics
       </Typography>
 
@@ -443,7 +470,7 @@ const AdminDashboardPage = () => {
       <Typography variant="h3" align="center" gutterBottom sx={{ mt: 6 }}>
         Legislative Basic Needs Report
       </Typography>
-      <Typography variant="h5" align="center" gutterBottom sx={{ mt: 4 }}>
+      <Typography variant="h4" align="center" gutterBottom sx={{ mt: 4 }}>
         Based on the number of students served from July 1, 2022 to June 30,
         2023
       </Typography>

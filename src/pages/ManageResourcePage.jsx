@@ -193,9 +193,7 @@ const ManageResourcePage = () => {
             color="text.secondary"
             paragraph
           >
-            Find information about latest aids, programs, as well as
-            instructional videos to help you understand the rehabilitation
-            process.
+            Manage resources by adding, updating, and deleting information.
           </Typography>
         </Container>
       </Box>
